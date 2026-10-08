@@ -12,20 +12,23 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 18
 
       - name: Setup Java JDK
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: '17'
 
-      - name: Install dependencies
+      - name: Prepare environment & Capacitor
         run: |
-          npm init -y
+          mkdir -p www
+          if [ ! -f package.json ]; then
+            npm init -y
+          fi
           npm install @capacitor/core @capacitor/cli @capacitor/android
 
-      - name: Add Android & Build APK
+      - name: Add Android Platform and Build
         run: |
           npx cap add android || true
           npx cap sync android
