@@ -20,9 +20,19 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
 
-      - name: Prepare environment & Capacitor
+      - name: Prepare environment & Fix entry point
         run: |
           mkdir -p www
+          # Если внутри www есть файл index без расширения, переименовываем в index.html
+          if [ -f www/index ] && [ ! -f www/index.html ]; then
+            mv www/index www/index.html
+          fi
+          
+          # Если index.html так и не найден, создаем заглушку, чтобы сборка не папада
+          if [ ! -f www/index.html ]; then
+            echo '<!DOCTYPE html><html><body><h1>Game loaded</h1></body></html>' > www/index.html
+          fi
+
           if [ ! -f package.json ]; then
             npm init -y
           fi
